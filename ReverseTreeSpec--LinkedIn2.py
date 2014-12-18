@@ -81,3 +81,83 @@ def RevRecurse(root,left,right,isRoot):
     
     
 }
+
+#=================== working soln ======================
+class TreeNode:
+    left = None
+    right = None
+    data = 0
+
+    def __init__(self, val):
+        self.data = val
+        self.left,self.right=None,None
+
+def countNodes(node):
+    if node is None:
+        return 0
+    return 1+countNodes(node.left)+countNodes(node.right)
+
+def printTree1(node):
+    COUNT = countNodes(node)
+    q = []
+    q.append((node,0))
+    ANS = []
+    while len(q)>0 and COUNT>0:
+        n,l = q.pop(0)
+        if n is not None:
+            COUNT = COUNT-1
+            ANS.append(n.data)
+            q.append((n.left,l+1))
+            q.append((n.right,l+1))
+        else:
+            ANS.append('#')
+    return ANS
+                 
+def loadTree(lst):
+    trNodes = [0]*len(lst)
+    for i,n in enumerate(lst):
+        trNodes[i] = TreeNode(int(n)) if n!='#' else None
+    for i,n in enumerate(trNodes):
+        if n is not None:
+            n.left = trNodes[2*i+1] if 2*i+1<len(trNodes) else None
+            n.right = trNodes[2*i+2] if 2*i+2<len(trNodes) else None
+    return trNodes[0]
+
+
+
+def RevRecurse(root,left,right,isRoot):    
+    if left is None:
+        return root
+    if(isRoot):
+         root.left,root.right = None,None  
+    else:
+         root.left,root.right = right,root 
+     
+    newNode =   RevRecurse(left, left.left, left.right,False)
+    left.left,left.right = right, root    
+    return newNode  
+        
+def reverse(node):
+    if node is None:
+        return None
+    T = RevRecurse(node, node.left, node.right, True)
+    print(printTree1(T))
+    
+
+print('*************')
+T = loadTree(range(1,4))
+ans=printTree1(T)
+print('*************')
+reverse(T)
+
+print('@@@@@@@@@@@@')
+T1 = [1,2,3,4,'#','#','#',5,6]
+T = loadTree(T1)
+ans=printTree1(T)
+print(ans)
+print('*************')
+reverse(T)
+
+    
+
+    
